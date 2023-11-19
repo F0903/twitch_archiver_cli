@@ -17,7 +17,7 @@ get --input_args "-hwaccel cuda" --output_args "-c:v h264_nvenc" **vod_url**
 
 ## Library Usage
 
-See the ![library repo.](https://github.com/F0903/twitch_archiver)
+See the [library repo.](https://github.com/F0903/twitch_archiver)
 
 ### Subscriber-only VODs
 
