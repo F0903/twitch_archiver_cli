@@ -1,4 +1,4 @@
-[![Rust Stable](https://github.com/F0903/twitch_archiver_cli/actions/workflows/rust.yml/badge.svg)](https://github.com/F0903/twitch_archiver/actions/workflows/rust.yml)
+[![Rust Stable](https://github.com/F0903/twitch_archiver_cli/actions/workflows/rust.yml/badge.svg)](https://github.com/F0903/twitch_archiver_cli/actions/workflows/rust.yml)
 
 # twitch_archiver_cli
 
