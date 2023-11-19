@@ -2,8 +2,8 @@ mod settings;
 
 use std::{borrow::Cow, io::Write, path::Path};
 use twitch_archiver::{
-    convert,
-    twitch::{Twitch, TWITCH_VOD_URL_REGEX},
+    convert::{self},
+    Twitch, TWITCH_VOD_URL_REGEX,
 };
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;

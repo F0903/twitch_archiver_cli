@@ -9,6 +9,12 @@ Simply pass in a url, and give it an optional output path with an extension of y
 
 Either run the executable normally as an interactive cli, or start the exe with parameters.
 
+### Hardware Acceleration
+
+For faster conversion, you can use hardware acceleration arguments provided to FFmpeg.
+For Nvidia GPUs, you can use the following arguments provided to **get**:
+get --input_args "-hwaccel cuda" --output_args "-c:v h264_nvenc" **vod_url**
+
 ## Library Usage
 
 See the ![library repo.](https://github.com/F0903/twitch_archiver)
