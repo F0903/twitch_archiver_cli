@@ -1,11 +1,19 @@
 [package]
 name = "twitch_archiver_cli"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
+repository = "https://github.com/F0903/twitch_archiver_cli"
+license-file = "LICENSE"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+strip = true
+lto = true
+
 [dependencies]
-twitch_archiver = { version = "0.3.1" }
+twitch_archiver = { version = "0.3.3" }
+#twitch_archiver = { path = "../twitch_archiver" }   # FOR LOCAL DEBUGGING
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = "^1.0"

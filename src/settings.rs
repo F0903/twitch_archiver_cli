@@ -8,12 +8,16 @@ const SETTINGS_PATH: &str = "./settings.json";
 #[derive(Serialize, Deserialize)]
 pub struct Settings {
     pub auth_token: Option<String>,
+    pub client_id: Option<String>,
 }
 
 fn get_or_create_settings() -> Result<Settings> {
     let settings = match fs::read(SETTINGS_PATH) {
         Ok(x) => serde_json::from_slice::<Settings>(&x)?,
-        _ => Settings { auth_token: None },
+        _ => Settings {
+            auth_token: None,
+            client_id: None,
+        },
     };
     Ok(settings)
 }

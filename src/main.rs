@@ -1,6 +1,6 @@
 mod settings;
 
-use std::{borrow::Cow, io::Write, path::Path};
+use std::{borrow::Cow, io::Write};
 use twitch_archiver::{
     convert::{self},
     Twitch, TWITCH_VOD_URL_REGEX,
@@ -8,24 +8,32 @@ use twitch_archiver::{
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-const TWITCH_CLIENT_ID: &str = "kimne78kx3ncx6brgo4mv6wki5h1ko"; // Should probably make user enter this into the program.
-
-fn collect_opt_stringed_arg<'a>(args: &mut impl Iterator<Item = &'a str>) -> Option<Cow<'a, str>> {
+fn collect_opt_stringed_arg<'a>(
+    args: &mut impl Iterator<Item = &'a str>,
+    preserve_quotes: bool,
+) -> Option<Cow<'a, str>> {
     let first = match args.next() {
         Some(x) => x,
         None => return None,
     };
 
     if first.chars().nth(0).unwrap() != '"' {
-        return Some(Cow::Borrowed(&first[1..]));
+        return Some(Cow::Borrowed(first));
     }
 
     let mut strbuf = String::with_capacity(first.len() + 20);
-    strbuf.push_str(&first[1..]);
+    let quote_start_index = if preserve_quotes { 0 } else { 1 };
+    strbuf.push_str(&first[quote_start_index..]);
+
     for arg in args {
         strbuf.push(' ');
         if arg.chars().last().unwrap() == '"' {
-            strbuf.push_str(&arg[0..arg.len() - 1]);
+            let quote_end_index = if preserve_quotes {
+                arg.len()
+            } else {
+                arg.len() - 1
+            };
+            strbuf.push_str(&arg[0..quote_end_index]);
             break;
         }
         strbuf.push_str(arg);
@@ -38,27 +46,34 @@ fn download<'a>(args: impl Iterator<Item = &'a str>) -> Result<()> {
     let mut args = args.peekable();
 
     let mut auth = settings::get()?.auth_token;
+    let mut client_id = settings::get()?.client_id;
     let mut input_args = None;
     let mut output_args = None;
     let mut url = "";
+    let mut out_path = None;
 
     loop {
         let arg = args.next();
         match arg {
             Some("--auth") => {
-                auth = Some(
-                    args.next()
-                        .ok_or("Auth option specified, but no token was provided.")?
-                        .to_owned(),
-                );
+                let arg = collect_opt_stringed_arg(&mut args, false);
+                auth = arg.map(|x| x.into_owned());
+            }
+            Some("--client-id") => {
+                let arg = collect_opt_stringed_arg(&mut args, false);
+                client_id = arg.map(|x| x.into_owned());
             }
             Some("--input_args") => {
-                let arg = collect_opt_stringed_arg(&mut args);
+                let arg = collect_opt_stringed_arg(&mut args, false);
                 input_args = arg.map(|x| x.into_owned());
             }
             Some("--output_args") => {
-                let arg = collect_opt_stringed_arg(&mut args);
+                let arg = collect_opt_stringed_arg(&mut args, false);
                 output_args = arg.map(|x| x.into_owned());
+            }
+            Some("-o") => {
+                let arg = collect_opt_stringed_arg(&mut args, false);
+                out_path = arg.map(|x| x.into_owned());
             }
             Some(x) => {
                 if TWITCH_VOD_URL_REGEX.is_match(x) {
@@ -71,16 +86,17 @@ fn download<'a>(args: impl Iterator<Item = &'a str>) -> Result<()> {
         }
     }
 
-    let mut twitch = Twitch::new(TWITCH_CLIENT_ID, auth);
+    let client_id = client_id.ok_or("You must provide a Client ID! Please refer to the README.")?;
+    let mut twitch = Twitch::new(client_id, auth);
     let id = Twitch::parse_id_from_url(url)?;
-    let out_filename = format!("{}.mp4", id);
-    let out_path = match args.next() {
-        Some(x) => Path::new(x),
+    let out_path = match out_path {
+        Some(x) => x,
         None => {
             println!("No output path provided... Will use default...");
-            Path::new(&out_filename)
+            format!("{}.mp4", id)
         }
     };
+
     let mut hls = twitch.get_hls_manifest(url)?;
     match convert::convert_hls_to_file(
         &mut hls,
@@ -94,7 +110,7 @@ fn download<'a>(args: impl Iterator<Item = &'a str>) -> Result<()> {
     Ok(())
 }
 
-fn auth<'a>(mut args: impl Iterator<Item = &'a str>) -> Result<()> {
+fn settings<'a>(mut args: impl Iterator<Item = &'a str>) -> Result<()> {
     let sub_cmd = args.next().ok_or("No subcommand specified!")?;
     match sub_cmd {
         "token" => {
@@ -108,6 +124,21 @@ fn auth<'a>(mut args: impl Iterator<Item = &'a str>) -> Result<()> {
                 "get" => {
                     let settings = settings::get()?;
                     println!("{:?}", settings.auth_token);
+                }
+                _ => return Err("Unknown operator!".into()),
+            }
+        }
+        "client-id" => {
+            let op = args.next().ok_or("No operator specified!")?;
+            match op {
+                "set" => {
+                    let value = args.next().ok_or("No value specified!")?;
+                    settings::set(|x| x.client_id = Some(value.to_owned()))?;
+                    println!("Successfully set client-id.");
+                }
+                "get" => {
+                    let settings = settings::get()?;
+                    println!("{:?}", settings.client_id);
                 }
                 _ => return Err("Unknown operator!".into()),
             }
@@ -127,7 +158,7 @@ fn parse_cmd(input: &str) -> Result<()> {
     let cmd_word = words.next().ok_or("No command specified")?;
     match cmd_word {
         "get" => download(words),
-        "auth" => auth(words),
+        "settings" => settings(words),
         "version" => version(),
         _ => Err(format!("Unknown command. \"{}\"", cmd_word).into()),
     }?;
