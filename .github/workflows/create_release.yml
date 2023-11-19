@@ -24,10 +24,10 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
     - name: Version
-      run: echo "::set-output name=version::$(.\target\release\twitch_archiver.exe version)"
+      run: echo "::set-output name=version::$(.\target\release\twitch_archiver_cli.exe version)"
       id: version
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.Version.outputs.version }}
-        files: target/release/twitch_archiver.exe
+        files: target/release/twitch_archiver_cli.exe
