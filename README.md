@@ -39,10 +39,10 @@ See the [library repo.](https://github.com/F0903/twitch_archiver)
 
 ## Commands
 
-get _options_ **url**
+get **url** _options_
 
 > Downloads specified VOD.  
-> Example: **get https://www.twitch.tv/videos/1199379108 vod.mp4**
+> Example: **get https://www.twitch.tv/videos/1199379108 -o vod.mp4**
 >
 > _options:_
 >
