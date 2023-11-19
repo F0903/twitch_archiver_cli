@@ -56,16 +56,16 @@ settings **sub-command** **operator** token set **auth_token**
 
 > Command for handling settings. Values saved in settings.json.
 >
-> - token get
+> - token get  
 >   Gets the current token.
 >
-> - token set **token**
+> - token set **token**  
 >   Sets the current token.
 >
-> - client-id get
+> - client-id get  
 >   Gets the curret client-id
 >
-> - client-id set **id**
+> - client-id set **id**  
 >   Sets the current client-id
 
 version
