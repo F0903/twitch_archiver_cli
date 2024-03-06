@@ -14,7 +14,8 @@ To download VODs, you must get your client id, as described below
 
 For faster conversion, you can use hardware acceleration arguments provided to FFmpeg.
 For Nvidia GPUs, you can use the following arguments provided to **get**:
-get --input_args "-hwaccel cuda" --output_args "-c:v h264_nvenc" **vod_url**
+get --input-args "-hwaccel cuda" --output-args "-c:v h264_nvenc" **vod_url**
+OR use get --nvenc **vod_url** as a shorthand
 
 ### Getting your Client ID
 

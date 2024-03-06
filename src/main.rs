@@ -63,13 +63,17 @@ fn download<'a>(args: impl Iterator<Item = &'a str>) -> Result<()> {
                 let arg = collect_opt_stringed_arg(&mut args, false);
                 client_id = arg.map(|x| x.into_owned());
             }
-            Some("--input_args") => {
+            Some("--input-args") => {
                 let arg = collect_opt_stringed_arg(&mut args, false);
                 input_args = arg.map(|x| x.into_owned());
             }
-            Some("--output_args") => {
+            Some("--output-args") => {
                 let arg = collect_opt_stringed_arg(&mut args, false);
                 output_args = arg.map(|x| x.into_owned());
+            }
+            Some("--nvenc") => {
+                input_args = Some("-hwaccel cuda".to_owned());
+                output_args = Some("-c:v h264_nvenc".to_owned());
             }
             Some("-o") => {
                 let arg = collect_opt_stringed_arg(&mut args, false);
