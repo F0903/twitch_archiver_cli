@@ -5,6 +5,8 @@
 A fast and tiny downloader for Twitch VODs (also sub-only).
 Simply pass in a url, and give it an optional output path with an extension of your choosing, which the video will then be converted to.
 
+To use as a library, see the [twitch_archiver repo.](https://github.com/F0903/twitch_archiver)
+
 ## Usage
 
 Either run the executable normally as an interactive cli, or start the exe with parameters.
