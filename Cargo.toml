@@ -13,7 +13,7 @@ strip = true
 lto = true
 
 [dependencies]
-twitch_archiver = { version = "0.3.3" }
+twitch_archiver = { version = "0.3" }
 #twitch_archiver = { path = "../twitch_archiver" }   # FOR LOCAL DEBUGGING
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = "^1.0"

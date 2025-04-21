@@ -1058,9 +1058,9 @@ checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
 name = "twitch_archiver"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29b28d18f40091cf70efc4c3165a4fd85b8f38f19ea80aac411042c97020f4e5"
+checksum = "1af9ffc6a5516b1099b03697ac204a03c0d52123c56263204f529c0acdcc1e8c"
 dependencies = [
  "once_cell",
  "regex",
